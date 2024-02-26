@@ -1,0 +1,1813 @@
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"system_stm32f1xx.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c"
+  18              		.global	SystemCoreClock
+  19              		.data
+  20              		.align	2
+  21              		.type	SystemCoreClock, %object
+  22              		.size	SystemCoreClock, 4
+  23              	SystemCoreClock:
+  24 0000 00A24A04 		.word	72000000
+  25              		.global	AHBPrescTable
+  26              		.section	.rodata
+  27              		.align	2
+  28              		.type	AHBPrescTable, %object
+  29              		.size	AHBPrescTable, 16
+  30              	AHBPrescTable:
+  31 0000 00000000 		.ascii	"\000\000\000\000\000\000\000\000\001\002\003\004\006"
+  31      00000000 
+  31      01020304 
+  31      06
+  32 000d 070809   		.ascii	"\007\010\011"
+  33              		.global	APBPrescTable
+  34              		.align	2
+  35              		.type	APBPrescTable, %object
+  36              		.size	APBPrescTable, 8
+  37              	APBPrescTable:
+  38 0010 00000000 		.ascii	"\000\000\000\000\001\002\003\004"
+  38      01020304 
+  39              		.text
+  40              		.align	1
+  41              		.global	SystemInit
+  42              		.syntax unified
+  43              		.thumb
+  44              		.thumb_func
+  45              		.type	SystemInit, %function
+  46              	SystemInit:
+  47              	.LFB63:
+   1:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+   2:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   ******************************************************************************
+   3:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @file    system_stm32f1xx.c
+   4:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @author  MCD Application Team
+   5:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @version V4.2.0
+   6:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @date    31-March-2017
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 2
+
+
+   7:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer System Source File.
+   8:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * 
+   9:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * 1.  This file provides two functions and one global variable to be called from 
+  10:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *     user application:
+  11:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      - SystemInit(): Setups the system clock (System clock source, PLL Multiplier
+  12:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                      factors, AHB/APBx prescalers and Flash settings). 
+  13:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                      This function is called at startup just after reset and 
+  14:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                      before branch to main program. This call is made inside
+  15:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                      the "startup_stm32f1xx_xx.s" file.
+  16:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  17:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      - SystemCoreClock variable: Contains the core clock (HCLK), it can be used
+  18:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                                  by the user application to setup the SysTick 
+  19:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                                  timer or configure other parameters.
+  20:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                                     
+  21:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      - SystemCoreClockUpdate(): Updates the variable SystemCoreClock and must
+  22:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                                 be called whenever the core clock is changed
+  23:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                                 during program execution.
+  24:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  25:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * 2. After each device reset the HSI (8 MHz) is used as system clock source.
+  26:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    Then SystemInit() function is called, in "startup_stm32f1xx_xx.s" file, to
+  27:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    configure the system clock before to branch to main program.
+  28:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  29:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * 4. The default value of HSE crystal is set to 8 MHz (or 25 MHz, depending on
+  30:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    the product used), refer to "HSE_VALUE". 
+  31:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    When HSE is used as system clock source, directly or through PLL, and you
+  32:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    are using different crystal you have to adapt the HSE value to your own
+  33:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    configuration.
+  34:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *        
+  35:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   ******************************************************************************
+  36:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @attention
+  37:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  38:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  39:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  40:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * Redistribution and use in source and binary forms, with or without modification,
+  41:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * are permitted provided that the following conditions are met:
+  42:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *   1. Redistributions of source code must retain the above copyright notice,
+  43:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      this list of conditions and the following disclaimer.
+  44:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *   2. Redistributions in binary form must reproduce the above copyright notice,
+  45:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      this list of conditions and the following disclaimer in the documentation
+  46:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      and/or other materials provided with the distribution.
+  47:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  48:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      may be used to endorse or promote products derived from this software
+  49:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *      without specific prior written permission.
+  50:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  51:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  52:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  53:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  54:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  55:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  56:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  57:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  58:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  59:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  60:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  61:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *
+  62:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   ******************************************************************************
+  63:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 3
+
+
+  64:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  65:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup CMSIS
+  66:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+  67:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+  68:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  69:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup stm32f1xx_system
+  70:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+  71:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */  
+  72:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   
+  73:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Includes
+  74:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+  75:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+  76:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  77:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #include "stm32f1xx.h"
+  78:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  79:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+  80:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @}
+  81:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+  82:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  83:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_TypesDefinitions
+  84:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+  85:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+  86:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  87:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+  88:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @}
+  89:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+  90:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  91:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Defines
+  92:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+  93:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+  94:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+  95:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if !defined  (HSE_VALUE) 
+  96:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   #define HSE_VALUE               8000000U /*!< Default value of the External oscillator in Hz.
+  97:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****                                                 This value can be provided and adapted by the user 
+  98:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* HSE_VALUE */
+  99:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 100:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if !defined  (HSI_VALUE)
+ 101:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   #define HSI_VALUE               8000000U /*!< Default value of the Internal oscillator in Hz.
+ 102:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****                                                 This value can be provided and adapted by the user 
+ 103:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* HSI_VALUE */
+ 104:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 105:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /*!< Uncomment the following line if you need to use external SRAM  */ 
+ 106:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) ||
+ 107:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /* #define DATA_IN_ExtSRAM */
+ 108:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F100xE || STM32F101xE || STM32F101xG || STM32F103xE || STM32F103xG */
+ 109:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 110:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /*!< Uncomment the following line if you need to relocate your vector Table in
+ 111:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****      Internal SRAM. */ 
+ 112:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /* #define VECT_TAB_SRAM */
+ 113:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #define VECT_TAB_OFFSET  0x00000000U /*!< Vector Table base offset field. 
+ 114:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****                                   This value must be a multiple of 0x200. */
+ 115:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 116:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 117:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+ 118:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @}
+ 119:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 120:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 4
+
+
+ 121:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Macros
+ 122:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+ 123:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 124:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 125:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+ 126:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @}
+ 127:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 128:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 129:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Variables
+ 130:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+ 131:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 132:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 133:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /*******************************************************************************
+ 134:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** *  Clock Definitions
+ 135:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** *******************************************************************************/
+ 136:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F100xB) ||defined(STM32F100xE)
+ 137:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   uint32_t SystemCoreClock         = 24000000U;        /*!< System Clock Frequency (Core Clock) */
+ 138:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #else /*!< HSI Selected as System Clock source */
+ 139:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   uint32_t SystemCoreClock         = 72000000U;        /*!< System Clock Frequency (Core Clock) */
+ 140:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif
+ 141:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 142:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** const uint8_t AHBPrescTable[16U] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+ 143:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** const uint8_t APBPrescTable[8U] =  {0, 0, 0, 0, 1, 2, 3, 4};
+ 144:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 145:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+ 146:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @}
+ 147:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 148:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 149:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_FunctionPrototypes
+ 150:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+ 151:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 152:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 153:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) ||
+ 154:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #ifdef DATA_IN_ExtSRAM
+ 155:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   static void SystemInit_ExtMemCtl(void); 
+ 156:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* DATA_IN_ExtSRAM */
+ 157:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F100xE || STM32F101xE || STM32F101xG || STM32F103xE || STM32F103xG */
+ 158:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 159:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+ 160:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @}
+ 161:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 162:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 163:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Functions
+ 164:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @{
+ 165:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 166:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 167:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+ 168:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @brief  Setup the microcontroller system
+ 169:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         Initialize the Embedded Flash Interface, the PLL and update the 
+ 170:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         SystemCoreClock variable.
+ 171:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @note   This function should be used only after reset.
+ 172:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @param  None
+ 173:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @retval None
+ 174:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 175:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** void SystemInit (void)
+ 176:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** {
+  48              		.loc 1 176 1
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 5
+
+
+  49              		.cfi_startproc
+  50              		@ args = 0, pretend = 0, frame = 0
+  51              		@ frame_needed = 1, uses_anonymous_args = 0
+  52              		@ link register save eliminated.
+  53 0000 80B4     		push	{r7}
+  54              		.cfi_def_cfa_offset 4
+  55              		.cfi_offset 7, -4
+  56 0002 00AF     		add	r7, sp, #0
+  57              		.cfi_def_cfa_register 7
+ 177:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
+ 178:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Set HSION bit */
+ 179:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CR |= 0x00000001U;
+  58              		.loc 1 179 6
+  59 0004 154B     		ldr	r3, .L2
+  60 0006 1B68     		ldr	r3, [r3]
+  61 0008 144A     		ldr	r2, .L2
+  62              		.loc 1 179 11
+  63 000a 43F00103 		orr	r3, r3, #1
+  64 000e 1360     		str	r3, [r2]
+ 180:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 181:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+ 182:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if !defined(STM32F105xC) && !defined(STM32F107xC)
+ 183:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CFGR &= 0xF8FF0000U;
+  65              		.loc 1 183 6
+  66 0010 124B     		ldr	r3, .L2
+  67 0012 5A68     		ldr	r2, [r3, #4]
+  68 0014 1149     		ldr	r1, .L2
+  69              		.loc 1 183 13
+  70 0016 124B     		ldr	r3, .L2+4
+  71 0018 1340     		ands	r3, r3, r2
+  72 001a 4B60     		str	r3, [r1, #4]
+ 184:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #else
+ 185:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CFGR &= 0xF0FF0000U;
+ 186:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F105xC */   
+ 187:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   
+ 188:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset HSEON, CSSON and PLLON bits */
+ 189:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CR &= 0xFEF6FFFFU;
+  73              		.loc 1 189 6
+  74 001c 0F4B     		ldr	r3, .L2
+  75 001e 1B68     		ldr	r3, [r3]
+  76 0020 0E4A     		ldr	r2, .L2
+  77              		.loc 1 189 11
+  78 0022 23F08473 		bic	r3, r3, #17301504
+  79 0026 23F48033 		bic	r3, r3, #65536
+  80 002a 1360     		str	r3, [r2]
+ 190:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 191:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset HSEBYP bit */
+ 192:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CR &= 0xFFFBFFFFU;
+  81              		.loc 1 192 6
+  82 002c 0B4B     		ldr	r3, .L2
+  83 002e 1B68     		ldr	r3, [r3]
+  84 0030 0A4A     		ldr	r2, .L2
+  85              		.loc 1 192 11
+  86 0032 23F48023 		bic	r3, r3, #262144
+  87 0036 1360     		str	r3, [r2]
+ 193:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 194:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 6
+
+
+ 195:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CFGR &= 0xFF80FFFFU;
+  88              		.loc 1 195 6
+  89 0038 084B     		ldr	r3, .L2
+  90 003a 5B68     		ldr	r3, [r3, #4]
+  91 003c 074A     		ldr	r2, .L2
+  92              		.loc 1 195 13
+  93 003e 23F4FE03 		bic	r3, r3, #8323072
+  94 0042 5360     		str	r3, [r2, #4]
+ 196:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 197:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F105xC) || defined(STM32F107xC)
+ 198:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset PLL2ON and PLL3ON bits */
+ 199:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CR &= 0xEBFFFFFFU;
+ 200:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 201:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Disable all interrupts and clear pending bits  */
+ 202:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CIR = 0x00FF0000U;
+ 203:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 204:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset CFGR2 register */
+ 205:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CFGR2 = 0x00000000U;
+ 206:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #elif defined(STM32F100xB) || defined(STM32F100xE)
+ 207:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Disable all interrupts and clear pending bits  */
+ 208:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CIR = 0x009F0000U;
+ 209:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 210:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Reset CFGR2 register */
+ 211:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CFGR2 = 0x00000000U;      
+ 212:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #else
+ 213:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Disable all interrupts and clear pending bits  */
+ 214:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   RCC->CIR = 0x009F0000U;
+  95              		.loc 1 214 6
+  96 0044 054B     		ldr	r3, .L2
+  97              		.loc 1 214 12
+  98 0046 4FF41F02 		mov	r2, #10420224
+  99 004a 9A60     		str	r2, [r3, #8]
+ 215:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F105xC */
+ 216:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     
+ 217:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) ||
+ 218:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   #ifdef DATA_IN_ExtSRAM
+ 219:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     SystemInit_ExtMemCtl(); 
+ 220:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   #endif /* DATA_IN_ExtSRAM */
+ 221:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif 
+ 222:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 223:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #ifdef VECT_TAB_SRAM
+ 224:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
+ 225:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #else
+ 226:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH. */
+ 100              		.loc 1 226 6
+ 101 004c 054B     		ldr	r3, .L2+8
+ 102              		.loc 1 226 13
+ 103 004e 4FF00062 		mov	r2, #134217728
+ 104 0052 9A60     		str	r2, [r3, #8]
+ 227:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif 
+ 228:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** }
+ 105              		.loc 1 228 1
+ 106 0054 00BF     		nop
+ 107 0056 BD46     		mov	sp, r7
+ 108              		.cfi_def_cfa_register 13
+ 109              		@ sp needed
+ 110 0058 80BC     		pop	{r7}
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 7
+
+
+ 111              		.cfi_restore 7
+ 112              		.cfi_def_cfa_offset 0
+ 113 005a 7047     		bx	lr
+ 114              	.L3:
+ 115              		.align	2
+ 116              	.L2:
+ 117 005c 00100240 		.word	1073876992
+ 118 0060 0000FFF8 		.word	-117506048
+ 119 0064 00ED00E0 		.word	-536810240
+ 120              		.cfi_endproc
+ 121              	.LFE63:
+ 122              		.size	SystemInit, .-SystemInit
+ 123              		.align	1
+ 124              		.global	SystemCoreClockUpdate
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.type	SystemCoreClockUpdate, %function
+ 129              	SystemCoreClockUpdate:
+ 130              	.LFB64:
+ 229:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 230:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** /**
+ 231:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @brief  Update SystemCoreClock variable according to Clock Register Values.
+ 232:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         The SystemCoreClock variable contains the core clock (HCLK), it can
+ 233:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         be used by the user application to setup the SysTick timer or configure
+ 234:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         other parameters.
+ 235:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           
+ 236:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @note   Each time the core clock (HCLK) changes, this function must be called
+ 237:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         to update SystemCoreClock variable value. Otherwise, any configuration
+ 238:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         based on this variable will be incorrect.         
+ 239:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *     
+ 240:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @note   - The system frequency computed by this function is not the real 
+ 241:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           frequency in the chip. It is calculated based on the predefined 
+ 242:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           constant and the selected clock source:
+ 243:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *             
+ 244:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           - If SYSCLK source is HSI, SystemCoreClock will contain the HSI_VALUE(*)
+ 245:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                                              
+ 246:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           - If SYSCLK source is HSE, SystemCoreClock will contain the HSE_VALUE(**)
+ 247:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                          
+ 248:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           - If SYSCLK source is PLL, SystemCoreClock will contain the HSE_VALUE(**) 
+ 249:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *             or HSI_VALUE(*) multiplied by the PLL factors.
+ 250:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         
+ 251:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         (*) HSI_VALUE is a constant defined in stm32f1xx.h file (default value
+ 252:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *             8 MHz) but the real value may vary depending on the variations
+ 253:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *             in voltage and temperature.   
+ 254:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *    
+ 255:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         (**) HSE_VALUE is a constant defined in stm32f1xx.h file (default value
+ 256:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *              8 MHz or 25 MHz, depending on the product used), user has to ensure
+ 257:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *              that HSE_VALUE is same as the real frequency of the crystal used.
+ 258:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *              Otherwise, this function may have wrong result.
+ 259:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *                
+ 260:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *         - The result of this function could be not correct when using fractional
+ 261:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   *           value for HSE crystal.
+ 262:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @param  None
+ 263:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   * @retval None
+ 264:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   */
+ 265:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** void SystemCoreClockUpdate (void)
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 8
+
+
+ 266:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** {
+ 131              		.loc 1 266 1
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 16
+ 134              		@ frame_needed = 1, uses_anonymous_args = 0
+ 135              		@ link register save eliminated.
+ 136 0068 80B4     		push	{r7}
+ 137              		.cfi_def_cfa_offset 4
+ 138              		.cfi_offset 7, -4
+ 139 006a 85B0     		sub	sp, sp, #20
+ 140              		.cfi_def_cfa_offset 24
+ 141 006c 00AF     		add	r7, sp, #0
+ 142              		.cfi_def_cfa_register 7
+ 267:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   uint32_t tmp = 0U, pllmull = 0U, pllsource = 0U;
+ 143              		.loc 1 267 12
+ 144 006e 0023     		movs	r3, #0
+ 145 0070 FB60     		str	r3, [r7, #12]
+ 146              		.loc 1 267 22
+ 147 0072 0023     		movs	r3, #0
+ 148 0074 BB60     		str	r3, [r7, #8]
+ 149              		.loc 1 267 36
+ 150 0076 0023     		movs	r3, #0
+ 151 0078 7B60     		str	r3, [r7, #4]
+ 268:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 269:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F105xC) || defined(STM32F107xC)
+ 270:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   uint32_t prediv1source = 0U, prediv1factor = 0U, prediv2factor = 0U, pll2mull = 0U;
+ 271:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F105xC */
+ 272:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 273:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if defined(STM32F100xB) || defined(STM32F100xE)
+ 274:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   uint32_t prediv1factor = 0U;
+ 275:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F100xB or STM32F100xE */
+ 276:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     
+ 277:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Get SYSCLK source -------------------------------------------------------*/
+ 278:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   tmp = RCC->CFGR & RCC_CFGR_SWS;
+ 152              		.loc 1 278 12
+ 153 007a 2F4B     		ldr	r3, .L13
+ 154 007c 5B68     		ldr	r3, [r3, #4]
+ 155              		.loc 1 278 7
+ 156 007e 03F00C03 		and	r3, r3, #12
+ 157 0082 FB60     		str	r3, [r7, #12]
+ 279:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   
+ 280:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   switch (tmp)
+ 158              		.loc 1 280 3
+ 159 0084 FB68     		ldr	r3, [r7, #12]
+ 160 0086 082B     		cmp	r3, #8
+ 161 0088 11D0     		beq	.L5
+ 162 008a FB68     		ldr	r3, [r7, #12]
+ 163 008c 082B     		cmp	r3, #8
+ 164 008e 3AD8     		bhi	.L6
+ 165 0090 FB68     		ldr	r3, [r7, #12]
+ 166 0092 002B     		cmp	r3, #0
+ 167 0094 03D0     		beq	.L7
+ 168 0096 FB68     		ldr	r3, [r7, #12]
+ 169 0098 042B     		cmp	r3, #4
+ 170 009a 04D0     		beq	.L8
+ 171 009c 33E0     		b	.L6
+ 172              	.L7:
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 9
+
+
+ 281:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   {
+ 282:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     case 0x00U:  /* HSI used as system clock */
+ 283:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       SystemCoreClock = HSI_VALUE;
+ 173              		.loc 1 283 23
+ 174 009e 274B     		ldr	r3, .L13+4
+ 175 00a0 274A     		ldr	r2, .L13+8
+ 176 00a2 1A60     		str	r2, [r3]
+ 284:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       break;
+ 177              		.loc 1 284 7
+ 178 00a4 33E0     		b	.L9
+ 179              	.L8:
+ 285:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     case 0x04U:  /* HSE used as system clock */
+ 286:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       SystemCoreClock = HSE_VALUE;
+ 180              		.loc 1 286 23
+ 181 00a6 254B     		ldr	r3, .L13+4
+ 182 00a8 254A     		ldr	r2, .L13+8
+ 183 00aa 1A60     		str	r2, [r3]
+ 287:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       break;
+ 184              		.loc 1 287 7
+ 185 00ac 2FE0     		b	.L9
+ 186              	.L5:
+ 288:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     case 0x08U:  /* PLL used as system clock */
+ 289:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 290:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       /* Get PLL clock source and multiplication factor ----------------------*/
+ 291:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
+ 187              		.loc 1 291 20
+ 188 00ae 224B     		ldr	r3, .L13
+ 189 00b0 5B68     		ldr	r3, [r3, #4]
+ 190              		.loc 1 291 15
+ 191 00b2 03F47013 		and	r3, r3, #3932160
+ 192 00b6 BB60     		str	r3, [r7, #8]
+ 292:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+ 193              		.loc 1 292 22
+ 194 00b8 1F4B     		ldr	r3, .L13
+ 195 00ba 5B68     		ldr	r3, [r3, #4]
+ 196              		.loc 1 292 17
+ 197 00bc 03F48033 		and	r3, r3, #65536
+ 198 00c0 7B60     		str	r3, [r7, #4]
+ 293:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       
+ 294:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #if !defined(STM32F105xC) && !defined(STM32F107xC)      
+ 295:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       pllmull = ( pllmull >> 18U) + 2U;
+ 199              		.loc 1 295 27
+ 200 00c2 BB68     		ldr	r3, [r7, #8]
+ 201 00c4 9B0C     		lsrs	r3, r3, #18
+ 202              		.loc 1 295 15
+ 203 00c6 0233     		adds	r3, r3, #2
+ 204 00c8 BB60     		str	r3, [r7, #8]
+ 296:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       
+ 297:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       if (pllsource == 0x00U)
+ 205              		.loc 1 297 10
+ 206 00ca 7B68     		ldr	r3, [r7, #4]
+ 207 00cc 002B     		cmp	r3, #0
+ 208 00ce 06D1     		bne	.L10
+ 298:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       {
+ 299:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+ 300:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         SystemCoreClock = (HSI_VALUE >> 1U) * pllmull;
+ 209              		.loc 1 300 45
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 10
+
+
+ 210 00d0 BB68     		ldr	r3, [r7, #8]
+ 211 00d2 1C4A     		ldr	r2, .L13+12
+ 212 00d4 02FB03F3 		mul	r3, r2, r3
+ 213              		.loc 1 300 25
+ 214 00d8 184A     		ldr	r2, .L13+4
+ 215 00da 1360     		str	r3, [r2]
+ 301:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       }
+ 302:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       else
+ 303:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       {
+ 304:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****  #if defined(STM32F100xB) || defined(STM32F100xE)
+ 305:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****        prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1U;
+ 306:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****        /* HSE oscillator clock selected as PREDIV1 clock entry */
+ 307:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****        SystemCoreClock = (HSE_VALUE / prediv1factor) * pllmull; 
+ 308:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****  #else
+ 309:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         /* HSE selected as PLL clock entry */
+ 310:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         if ((RCC->CFGR & RCC_CFGR_PLLXTPRE) != (uint32_t)RESET)
+ 311:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 312:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           SystemCoreClock = (HSE_VALUE >> 1U) * pllmull;
+ 313:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 314:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         else
+ 315:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         {
+ 316:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           SystemCoreClock = HSE_VALUE * pllmull;
+ 317:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 318:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****  #endif
+ 319:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       }
+ 320:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #else
+ 321:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       pllmull = pllmull >> 18U;
+ 322:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       
+ 323:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       if (pllmull != 0x0DU)
+ 324:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       {
+ 325:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****          pllmull += 2U;
+ 326:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       }
+ 327:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       else
+ 328:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       { /* PLL multiplication factor = PLL input clock * 6.5 */
+ 329:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         pllmull = 13U / 2U; 
+ 330:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       }
+ 331:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****             
+ 332:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       if (pllsource == 0x00U)
+ 333:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       {
+ 334:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+ 335:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         SystemCoreClock = (HSI_VALUE >> 1U) * pllmull;
+ 336:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       }
+ 337:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       else
+ 338:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       {/* PREDIV1 selected as PLL clock entry */
+ 339:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         
+ 340:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         /* Get PREDIV1 clock source and division factor */
+ 341:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         prediv1source = RCC->CFGR2 & RCC_CFGR2_PREDIV1SRC;
+ 342:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1U;
+ 343:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         
+ 344:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         if (prediv1source == 0U)
+ 345:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         { 
+ 346:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           /* HSE oscillator clock selected as PREDIV1 clock entry */
+ 347:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           SystemCoreClock = (HSE_VALUE / prediv1factor) * pllmull;          
+ 348:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 349:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         else
+ 350:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         {/* PLL2 clock selected as PREDIV1 clock entry */
+ 351:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 11
+
+
+ 352:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           /* Get PREDIV2 division factor and PLL2 multiplication factor */
+ 353:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           prediv2factor = ((RCC->CFGR2 & RCC_CFGR2_PREDIV2) >> 4U) + 1U;
+ 354:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           pll2mull = ((RCC->CFGR2 & RCC_CFGR2_PLL2MUL) >> 8U) + 2U; 
+ 355:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****           SystemCoreClock = (((HSE_VALUE / prediv2factor) * pll2mull) / prediv1factor) * pllmull;  
+ 356:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 357:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       }
+ 358:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** #endif /* STM32F105xC */ 
+ 359:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       break;
+ 216              		.loc 1 359 7
+ 217 00dc 17E0     		b	.L9
+ 218              	.L10:
+ 310:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 219              		.loc 1 310 17
+ 220 00de 164B     		ldr	r3, .L13
+ 221 00e0 5B68     		ldr	r3, [r3, #4]
+ 310:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 222              		.loc 1 310 24
+ 223 00e2 03F40033 		and	r3, r3, #131072
+ 310:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 224              		.loc 1 310 12
+ 225 00e6 002B     		cmp	r3, #0
+ 226 00e8 06D0     		beq	.L12
+ 312:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 227              		.loc 1 312 47
+ 228 00ea BB68     		ldr	r3, [r7, #8]
+ 229 00ec 154A     		ldr	r2, .L13+12
+ 230 00ee 02FB03F3 		mul	r3, r2, r3
+ 312:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 231              		.loc 1 312 27
+ 232 00f2 124A     		ldr	r2, .L13+4
+ 233 00f4 1360     		str	r3, [r2]
+ 234              		.loc 1 359 7
+ 235 00f6 0AE0     		b	.L9
+ 236              	.L12:
+ 316:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 237              		.loc 1 316 39
+ 238 00f8 BB68     		ldr	r3, [r7, #8]
+ 239 00fa 114A     		ldr	r2, .L13+8
+ 240 00fc 02FB03F3 		mul	r3, r2, r3
+ 316:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****         }
+ 241              		.loc 1 316 27
+ 242 0100 0E4A     		ldr	r2, .L13+4
+ 243 0102 1360     		str	r3, [r2]
+ 244              		.loc 1 359 7
+ 245 0104 03E0     		b	.L9
+ 246              	.L6:
+ 360:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** 
+ 361:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****     default:
+ 362:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       SystemCoreClock = HSI_VALUE;
+ 247              		.loc 1 362 23
+ 248 0106 0D4B     		ldr	r3, .L13+4
+ 249 0108 0D4A     		ldr	r2, .L13+8
+ 250 010a 1A60     		str	r2, [r3]
+ 363:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****       break;
+ 251              		.loc 1 363 7
+ 252 010c 00BF     		nop
+ 253              	.L9:
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 12
+
+
+ 364:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   }
+ 365:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   
+ 366:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Compute HCLK clock frequency ----------------*/
+ 367:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* Get HCLK prescaler */
+ 368:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> 4U)];
+ 254              		.loc 1 368 28
+ 255 010e 0A4B     		ldr	r3, .L13
+ 256 0110 5B68     		ldr	r3, [r3, #4]
+ 257              		.loc 1 368 52
+ 258 0112 1B09     		lsrs	r3, r3, #4
+ 259 0114 03F00F03 		and	r3, r3, #15
+ 260              		.loc 1 368 22
+ 261 0118 0B4A     		ldr	r2, .L13+16
+ 262 011a D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 263              		.loc 1 368 7
+ 264 011c FB60     		str	r3, [r7, #12]
+ 369:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   /* HCLK clock frequency */
+ 370:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c ****   SystemCoreClock >>= tmp;  
+ 265              		.loc 1 370 19
+ 266 011e 074B     		ldr	r3, .L13+4
+ 267 0120 1A68     		ldr	r2, [r3]
+ 268 0122 FB68     		ldr	r3, [r7, #12]
+ 269 0124 22FA03F3 		lsr	r3, r2, r3
+ 270 0128 044A     		ldr	r2, .L13+4
+ 271 012a 1360     		str	r3, [r2]
+ 371:CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c **** }
+ 272              		.loc 1 371 1
+ 273 012c 00BF     		nop
+ 274 012e 1437     		adds	r7, r7, #20
+ 275              		.cfi_def_cfa_offset 4
+ 276 0130 BD46     		mov	sp, r7
+ 277              		.cfi_def_cfa_register 13
+ 278              		@ sp needed
+ 279 0132 80BC     		pop	{r7}
+ 280              		.cfi_restore 7
+ 281              		.cfi_def_cfa_offset 0
+ 282 0134 7047     		bx	lr
+ 283              	.L14:
+ 284 0136 00BF     		.align	2
+ 285              	.L13:
+ 286 0138 00100240 		.word	1073876992
+ 287 013c 00000000 		.word	SystemCoreClock
+ 288 0140 00127A00 		.word	8000000
+ 289 0144 00093D00 		.word	4000000
+ 290 0148 00000000 		.word	AHBPrescTable
+ 291              		.cfi_endproc
+ 292              	.LFE64:
+ 293              		.size	SystemCoreClockUpdate, .-SystemCoreClockUpdate
+ 294              	.Letext0:
+ 295              		.file 2 "/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 296              		.file 3 "/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 297              		.file 4 "./CMSIS/include/core_cm3.h"
+ 298              		.file 5 "./CMSIS/Device/STM32F1xx/include/system_stm32f1xx.h"
+ 299              		.file 6 "./CMSIS/Device/STM32F1xx/include/stm32f103xb.h"
+ 300              		.file 7 "./CMSIS/Device/STM32F1xx/include/stm32f1xx.h"
+ 301              		.section	.debug_info,"",%progbits
+ 302              	.Ldebug_info0:
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 13
+
+
+ 303 0000 DE030000 		.4byte	0x3de
+ 304 0004 0500     		.2byte	0x5
+ 305 0006 01       		.byte	0x1
+ 306 0007 04       		.byte	0x4
+ 307 0008 00000000 		.4byte	.Ldebug_abbrev0
+ 308 000c 0E       		.uleb128 0xe
+ 309 000d 11020000 		.4byte	.LASF43
+ 310 0011 0C       		.byte	0xc
+ 311 0012 4A010000 		.4byte	.LASF44
+ 312 0016 66000000 		.4byte	.LASF45
+ 313 001a 00000000 		.4byte	.Ltext0
+ 314 001e 4C010000 		.4byte	.Letext0-.Ltext0
+ 315 0022 00000000 		.4byte	.Ldebug_line0
+ 316 0026 02       		.uleb128 0x2
+ 317 0027 01       		.byte	0x1
+ 318 0028 06       		.byte	0x6
+ 319 0029 FA010000 		.4byte	.LASF0
+ 320 002d 08       		.uleb128 0x8
+ 321 002e 24000000 		.4byte	.LASF5
+ 322 0032 02       		.byte	0x2
+ 323 0033 2B       		.byte	0x2b
+ 324 0034 18       		.byte	0x18
+ 325 0035 39000000 		.4byte	0x39
+ 326 0039 02       		.uleb128 0x2
+ 327 003a 01       		.byte	0x1
+ 328 003b 08       		.byte	0x8
+ 329 003c 9D000000 		.4byte	.LASF1
+ 330 0040 02       		.uleb128 0x2
+ 331 0041 02       		.byte	0x2
+ 332 0042 05       		.byte	0x5
+ 333 0043 F3000000 		.4byte	.LASF2
+ 334 0047 02       		.uleb128 0x2
+ 335 0048 02       		.byte	0x2
+ 336 0049 07       		.byte	0x7
+ 337 004a 39000000 		.4byte	.LASF3
+ 338 004e 02       		.uleb128 0x2
+ 339 004f 04       		.byte	0x4
+ 340 0050 05       		.byte	0x5
+ 341 0051 F1010000 		.4byte	.LASF4
+ 342 0055 08       		.uleb128 0x8
+ 343 0056 D0000000 		.4byte	.LASF6
+ 344 005a 02       		.byte	0x2
+ 345 005b 4F       		.byte	0x4f
+ 346 005c 19       		.byte	0x19
+ 347 005d 61000000 		.4byte	0x61
+ 348 0061 02       		.uleb128 0x2
+ 349 0062 04       		.byte	0x4
+ 350 0063 07       		.byte	0x7
+ 351 0064 B9000000 		.4byte	.LASF7
+ 352 0068 02       		.uleb128 0x2
+ 353 0069 08       		.byte	0x8
+ 354 006a 05       		.byte	0x5
+ 355 006b 88010000 		.4byte	.LASF8
+ 356 006f 02       		.uleb128 0x2
+ 357 0070 08       		.byte	0x8
+ 358 0071 07       		.byte	0x7
+ 359 0072 33010000 		.4byte	.LASF9
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 14
+
+
+ 360 0076 0F       		.uleb128 0xf
+ 361 0077 04       		.byte	0x4
+ 362 0078 05       		.byte	0x5
+ 363 0079 696E7400 		.ascii	"int\000"
+ 364 007d 02       		.uleb128 0x2
+ 365 007e 04       		.byte	0x4
+ 366 007f 07       		.byte	0x7
+ 367 0080 17010000 		.4byte	.LASF10
+ 368 0084 08       		.uleb128 0x8
+ 369 0085 4C000000 		.4byte	.LASF11
+ 370 0089 03       		.byte	0x3
+ 371 008a 18       		.byte	0x18
+ 372 008b 13       		.byte	0x13
+ 373 008c 2D000000 		.4byte	0x2d
+ 374 0090 07       		.uleb128 0x7
+ 375 0091 84000000 		.4byte	0x84
+ 376 0095 04       		.uleb128 0x4
+ 377 0096 84000000 		.4byte	0x84
+ 378 009a 08       		.uleb128 0x8
+ 379 009b E8010000 		.4byte	.LASF12
+ 380 009f 03       		.byte	0x3
+ 381 00a0 30       		.byte	0x30
+ 382 00a1 14       		.byte	0x14
+ 383 00a2 55000000 		.4byte	0x55
+ 384 00a6 07       		.uleb128 0x7
+ 385 00a7 9A000000 		.4byte	0x9a
+ 386 00ab 04       		.uleb128 0x4
+ 387 00ac A6000000 		.4byte	0xa6
+ 388 00b0 0B       		.uleb128 0xb
+ 389 00b1 8C       		.byte	0x8c
+ 390 00b2 04       		.byte	0x4
+ 391 00b3 A101     		.2byte	0x1a1
+ 392 00b5 E0010000 		.4byte	0x1e0
+ 393 00b9 01       		.uleb128 0x1
+ 394 00ba 96010000 		.4byte	.LASF13
+ 395 00be 04       		.byte	0x4
+ 396 00bf A301     		.2byte	0x1a3
+ 397 00c1 12       		.byte	0x12
+ 398 00c2 AB000000 		.4byte	0xab
+ 399 00c6 00       		.byte	0
+ 400 00c7 01       		.uleb128 0x1
+ 401 00c8 E5000000 		.4byte	.LASF14
+ 402 00cc 04       		.byte	0x4
+ 403 00cd A401     		.2byte	0x1a4
+ 404 00cf 12       		.byte	0x12
+ 405 00d0 A6000000 		.4byte	0xa6
+ 406 00d4 04       		.byte	0x4
+ 407 00d5 01       		.uleb128 0x1
+ 408 00d6 DB000000 		.4byte	.LASF15
+ 409 00da 04       		.byte	0x4
+ 410 00db A501     		.2byte	0x1a5
+ 411 00dd 12       		.byte	0x12
+ 412 00de A6000000 		.4byte	0xa6
+ 413 00e2 08       		.byte	0x8
+ 414 00e3 01       		.uleb128 0x1
+ 415 00e4 78010000 		.4byte	.LASF16
+ 416 00e8 04       		.byte	0x4
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 15
+
+
+ 417 00e9 A601     		.2byte	0x1a6
+ 418 00eb 12       		.byte	0x12
+ 419 00ec A6000000 		.4byte	0xa6
+ 420 00f0 0C       		.byte	0xc
+ 421 00f1 03       		.uleb128 0x3
+ 422 00f2 53435200 		.ascii	"SCR\000"
+ 423 00f6 04       		.byte	0x4
+ 424 00f7 A701     		.2byte	0x1a7
+ 425 00f9 12       		.byte	0x12
+ 426 00fa A6000000 		.4byte	0xa6
+ 427 00fe 10       		.byte	0x10
+ 428 00ff 03       		.uleb128 0x3
+ 429 0100 43435200 		.ascii	"CCR\000"
+ 430 0104 04       		.byte	0x4
+ 431 0105 A801     		.2byte	0x1a8
+ 432 0107 12       		.byte	0x12
+ 433 0108 A6000000 		.4byte	0xa6
+ 434 010c 14       		.byte	0x14
+ 435 010d 03       		.uleb128 0x3
+ 436 010e 53485000 		.ascii	"SHP\000"
+ 437 0112 04       		.byte	0x4
+ 438 0113 A901     		.2byte	0x1a9
+ 439 0115 12       		.byte	0x12
+ 440 0116 F0010000 		.4byte	0x1f0
+ 441 011a 18       		.byte	0x18
+ 442 011b 01       		.uleb128 0x1
+ 443 011c 1E000000 		.4byte	.LASF17
+ 444 0120 04       		.byte	0x4
+ 445 0121 AA01     		.2byte	0x1aa
+ 446 0123 12       		.byte	0x12
+ 447 0124 A6000000 		.4byte	0xa6
+ 448 0128 24       		.byte	0x24
+ 449 0129 01       		.uleb128 0x1
+ 450 012a CB000000 		.4byte	.LASF18
+ 451 012e 04       		.byte	0x4
+ 452 012f AB01     		.2byte	0x1ab
+ 453 0131 12       		.byte	0x12
+ 454 0132 A6000000 		.4byte	0xa6
+ 455 0136 28       		.byte	0x28
+ 456 0137 01       		.uleb128 0x1
+ 457 0138 E0000000 		.4byte	.LASF19
+ 458 013c 04       		.byte	0x4
+ 459 013d AC01     		.2byte	0x1ac
+ 460 013f 12       		.byte	0x12
+ 461 0140 A6000000 		.4byte	0xa6
+ 462 0144 2C       		.byte	0x2c
+ 463 0145 01       		.uleb128 0x1
+ 464 0146 2E010000 		.4byte	.LASF20
+ 465 014a 04       		.byte	0x4
+ 466 014b AD01     		.2byte	0x1ad
+ 467 014d 12       		.byte	0x12
+ 468 014e A6000000 		.4byte	0xa6
+ 469 0152 30       		.byte	0x30
+ 470 0153 01       		.uleb128 0x1
+ 471 0154 D6010000 		.4byte	.LASF21
+ 472 0158 04       		.byte	0x4
+ 473 0159 AE01     		.2byte	0x1ae
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 16
+
+
+ 474 015b 12       		.byte	0x12
+ 475 015c A6000000 		.4byte	0xa6
+ 476 0160 34       		.byte	0x34
+ 477 0161 01       		.uleb128 0x1
+ 478 0162 83010000 		.4byte	.LASF22
+ 479 0166 04       		.byte	0x4
+ 480 0167 AF01     		.2byte	0x1af
+ 481 0169 12       		.byte	0x12
+ 482 016a A6000000 		.4byte	0xa6
+ 483 016e 38       		.byte	0x38
+ 484 016f 01       		.uleb128 0x1
+ 485 0170 06020000 		.4byte	.LASF23
+ 486 0174 04       		.byte	0x4
+ 487 0175 B001     		.2byte	0x1b0
+ 488 0177 12       		.byte	0x12
+ 489 0178 A6000000 		.4byte	0xa6
+ 490 017c 3C       		.byte	0x3c
+ 491 017d 03       		.uleb128 0x3
+ 492 017e 50465200 		.ascii	"PFR\000"
+ 493 0182 04       		.byte	0x4
+ 494 0183 B101     		.2byte	0x1b1
+ 495 0185 12       		.byte	0x12
+ 496 0186 0A020000 		.4byte	0x20a
+ 497 018a 40       		.byte	0x40
+ 498 018b 03       		.uleb128 0x3
+ 499 018c 44465200 		.ascii	"DFR\000"
+ 500 0190 04       		.byte	0x4
+ 501 0191 B201     		.2byte	0x1b2
+ 502 0193 12       		.byte	0x12
+ 503 0194 AB000000 		.4byte	0xab
+ 504 0198 48       		.byte	0x48
+ 505 0199 03       		.uleb128 0x3
+ 506 019a 41445200 		.ascii	"ADR\000"
+ 507 019e 04       		.byte	0x4
+ 508 019f B301     		.2byte	0x1b3
+ 509 01a1 12       		.byte	0x12
+ 510 01a2 AB000000 		.4byte	0xab
+ 511 01a6 4C       		.byte	0x4c
+ 512 01a7 01       		.uleb128 0x1
+ 513 01a8 19000000 		.4byte	.LASF24
+ 514 01ac 04       		.byte	0x4
+ 515 01ad B401     		.2byte	0x1b4
+ 516 01af 12       		.byte	0x12
+ 517 01b0 24020000 		.4byte	0x224
+ 518 01b4 50       		.byte	0x50
+ 519 01b5 01       		.uleb128 0x1
+ 520 01b6 7E010000 		.4byte	.LASF25
+ 521 01ba 04       		.byte	0x4
+ 522 01bb B501     		.2byte	0x1b5
+ 523 01bd 12       		.byte	0x12
+ 524 01be 3E020000 		.4byte	0x23e
+ 525 01c2 60       		.byte	0x60
+ 526 01c3 01       		.uleb128 0x1
+ 527 01c4 54000000 		.4byte	.LASF26
+ 528 01c8 04       		.byte	0x4
+ 529 01c9 B601     		.2byte	0x1b6
+ 530 01cb 12       		.byte	0x12
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 17
+
+
+ 531 01cc 43020000 		.4byte	0x243
+ 532 01d0 74       		.byte	0x74
+ 533 01d1 01       		.uleb128 0x1
+ 534 01d2 9C010000 		.4byte	.LASF27
+ 535 01d6 04       		.byte	0x4
+ 536 01d7 B701     		.2byte	0x1b7
+ 537 01d9 12       		.byte	0x12
+ 538 01da A6000000 		.4byte	0xa6
+ 539 01de 88       		.byte	0x88
+ 540 01df 00       		.byte	0
+ 541 01e0 05       		.uleb128 0x5
+ 542 01e1 90000000 		.4byte	0x90
+ 543 01e5 F0010000 		.4byte	0x1f0
+ 544 01e9 06       		.uleb128 0x6
+ 545 01ea 7D000000 		.4byte	0x7d
+ 546 01ee 0B       		.byte	0xb
+ 547 01ef 00       		.byte	0
+ 548 01f0 07       		.uleb128 0x7
+ 549 01f1 E0010000 		.4byte	0x1e0
+ 550 01f5 05       		.uleb128 0x5
+ 551 01f6 AB000000 		.4byte	0xab
+ 552 01fa 05020000 		.4byte	0x205
+ 553 01fe 06       		.uleb128 0x6
+ 554 01ff 7D000000 		.4byte	0x7d
+ 555 0203 01       		.byte	0x1
+ 556 0204 00       		.byte	0
+ 557 0205 04       		.uleb128 0x4
+ 558 0206 F5010000 		.4byte	0x1f5
+ 559 020a 07       		.uleb128 0x7
+ 560 020b 05020000 		.4byte	0x205
+ 561 020f 05       		.uleb128 0x5
+ 562 0210 AB000000 		.4byte	0xab
+ 563 0214 1F020000 		.4byte	0x21f
+ 564 0218 06       		.uleb128 0x6
+ 565 0219 7D000000 		.4byte	0x7d
+ 566 021d 03       		.byte	0x3
+ 567 021e 00       		.byte	0
+ 568 021f 04       		.uleb128 0x4
+ 569 0220 0F020000 		.4byte	0x20f
+ 570 0224 07       		.uleb128 0x7
+ 571 0225 1F020000 		.4byte	0x21f
+ 572 0229 05       		.uleb128 0x5
+ 573 022a AB000000 		.4byte	0xab
+ 574 022e 39020000 		.4byte	0x239
+ 575 0232 06       		.uleb128 0x6
+ 576 0233 7D000000 		.4byte	0x7d
+ 577 0237 04       		.byte	0x4
+ 578 0238 00       		.byte	0
+ 579 0239 04       		.uleb128 0x4
+ 580 023a 29020000 		.4byte	0x229
+ 581 023e 07       		.uleb128 0x7
+ 582 023f 39020000 		.4byte	0x239
+ 583 0243 05       		.uleb128 0x5
+ 584 0244 9A000000 		.4byte	0x9a
+ 585 0248 53020000 		.4byte	0x253
+ 586 024c 06       		.uleb128 0x6
+ 587 024d 7D000000 		.4byte	0x7d
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 18
+
+
+ 588 0251 04       		.byte	0x4
+ 589 0252 00       		.byte	0
+ 590 0253 0C       		.uleb128 0xc
+ 591 0254 0E010000 		.4byte	.LASF28
+ 592 0258 04       		.byte	0x4
+ 593 0259 B801     		.2byte	0x1b8
+ 594 025b B0000000 		.4byte	0xb0
+ 595 025f 09       		.uleb128 0x9
+ 596 0260 A2010000 		.4byte	.LASF29
+ 597 0264 45       		.byte	0x45
+ 598 0265 11       		.byte	0x11
+ 599 0266 9A000000 		.4byte	0x9a
+ 600 026a 05       		.uleb128 0x5
+ 601 026b 95000000 		.4byte	0x95
+ 602 026f 7A020000 		.4byte	0x27a
+ 603 0273 06       		.uleb128 0x6
+ 604 0274 7D000000 		.4byte	0x7d
+ 605 0278 0F       		.byte	0xf
+ 606 0279 00       		.byte	0
+ 607 027a 04       		.uleb128 0x4
+ 608 027b 6A020000 		.4byte	0x26a
+ 609 027f 09       		.uleb128 0x9
+ 610 0280 AB000000 		.4byte	.LASF30
+ 611 0284 46       		.byte	0x46
+ 612 0285 17       		.byte	0x17
+ 613 0286 7A020000 		.4byte	0x27a
+ 614 028a 05       		.uleb128 0x5
+ 615 028b 95000000 		.4byte	0x95
+ 616 028f 9A020000 		.4byte	0x29a
+ 617 0293 06       		.uleb128 0x6
+ 618 0294 7D000000 		.4byte	0x7d
+ 619 0298 07       		.byte	0x7
+ 620 0299 00       		.byte	0
+ 621 029a 04       		.uleb128 0x4
+ 622 029b 8A020000 		.4byte	0x28a
+ 623 029f 09       		.uleb128 0x9
+ 624 02a0 C8010000 		.4byte	.LASF31
+ 625 02a4 47       		.byte	0x47
+ 626 02a5 17       		.byte	0x17
+ 627 02a6 9A020000 		.4byte	0x29a
+ 628 02aa 0B       		.uleb128 0xb
+ 629 02ab 28       		.byte	0x28
+ 630 02ac 06       		.byte	0x6
+ 631 02ad BA01     		.2byte	0x1ba
+ 632 02af 3F030000 		.4byte	0x33f
+ 633 02b3 03       		.uleb128 0x3
+ 634 02b4 435200   		.ascii	"CR\000"
+ 635 02b7 06       		.byte	0x6
+ 636 02b8 BC01     		.2byte	0x1bc
+ 637 02ba 11       		.byte	0x11
+ 638 02bb A6000000 		.4byte	0xa6
+ 639 02bf 00       		.byte	0
+ 640 02c0 01       		.uleb128 0x1
+ 641 02c1 0D000000 		.4byte	.LASF32
+ 642 02c5 06       		.byte	0x6
+ 643 02c6 BD01     		.2byte	0x1bd
+ 644 02c8 11       		.byte	0x11
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 19
+
+
+ 645 02c9 A6000000 		.4byte	0xa6
+ 646 02cd 04       		.byte	0x4
+ 647 02ce 03       		.uleb128 0x3
+ 648 02cf 43495200 		.ascii	"CIR\000"
+ 649 02d3 06       		.byte	0x6
+ 650 02d4 BE01     		.2byte	0x1be
+ 651 02d6 11       		.byte	0x11
+ 652 02d7 A6000000 		.4byte	0xa6
+ 653 02db 08       		.byte	0x8
+ 654 02dc 01       		.uleb128 0x1
+ 655 02dd 05010000 		.4byte	.LASF33
+ 656 02e1 06       		.byte	0x6
+ 657 02e2 BF01     		.2byte	0x1bf
+ 658 02e4 11       		.byte	0x11
+ 659 02e5 A6000000 		.4byte	0xa6
+ 660 02e9 0C       		.byte	0xc
+ 661 02ea 01       		.uleb128 0x1
+ 662 02eb EA000000 		.4byte	.LASF34
+ 663 02ef 06       		.byte	0x6
+ 664 02f0 C001     		.2byte	0x1c0
+ 665 02f2 11       		.byte	0x11
+ 666 02f3 A6000000 		.4byte	0xa6
+ 667 02f7 10       		.byte	0x10
+ 668 02f8 01       		.uleb128 0x1
+ 669 02f9 12000000 		.4byte	.LASF35
+ 670 02fd 06       		.byte	0x6
+ 671 02fe C101     		.2byte	0x1c1
+ 672 0300 11       		.byte	0x11
+ 673 0301 A6000000 		.4byte	0xa6
+ 674 0305 14       		.byte	0x14
+ 675 0306 01       		.uleb128 0x1
+ 676 0307 5E000000 		.4byte	.LASF36
+ 677 030b 06       		.byte	0x6
+ 678 030c C201     		.2byte	0x1c2
+ 679 030e 11       		.byte	0x11
+ 680 030f A6000000 		.4byte	0xa6
+ 681 0313 18       		.byte	0x18
+ 682 0314 01       		.uleb128 0x1
+ 683 0315 FD000000 		.4byte	.LASF37
+ 684 0319 06       		.byte	0x6
+ 685 031a C301     		.2byte	0x1c3
+ 686 031c 11       		.byte	0x11
+ 687 031d A6000000 		.4byte	0xa6
+ 688 0321 1C       		.byte	0x1c
+ 689 0322 01       		.uleb128 0x1
+ 690 0323 08000000 		.4byte	.LASF38
+ 691 0327 06       		.byte	0x6
+ 692 0328 C401     		.2byte	0x1c4
+ 693 032a 11       		.byte	0x11
+ 694 032b A6000000 		.4byte	0xa6
+ 695 032f 20       		.byte	0x20
+ 696 0330 03       		.uleb128 0x3
+ 697 0331 43535200 		.ascii	"CSR\000"
+ 698 0335 06       		.byte	0x6
+ 699 0336 C501     		.2byte	0x1c5
+ 700 0338 11       		.byte	0x11
+ 701 0339 A6000000 		.4byte	0xa6
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 20
+
+
+ 702 033d 24       		.byte	0x24
+ 703 033e 00       		.byte	0
+ 704 033f 0C       		.uleb128 0xc
+ 705 0340 DC010000 		.4byte	.LASF39
+ 706 0344 06       		.byte	0x6
+ 707 0345 C801     		.2byte	0x1c8
+ 708 0347 AA020000 		.4byte	0x2aa
+ 709 034b 10       		.uleb128 0x10
+ 710 034c 07       		.byte	0x7
+ 711 034d 01       		.byte	0x1
+ 712 034e 39000000 		.4byte	0x39
+ 713 0352 07       		.byte	0x7
+ 714 0353 AA       		.byte	0xaa
+ 715 0354 01       		.byte	0x1
+ 716 0355 66030000 		.4byte	0x366
+ 717 0359 11       		.uleb128 0x11
+ 718 035a 0B020000 		.4byte	.LASF40
+ 719 035e 00       		.byte	0
+ 720 035f 12       		.uleb128 0x12
+ 721 0360 53455400 		.ascii	"SET\000"
+ 722 0364 01       		.byte	0x1
+ 723 0365 00       		.byte	0
+ 724 0366 0A       		.uleb128 0xa
+ 725 0367 5F020000 		.4byte	0x25f
+ 726 036b 8B       		.byte	0x8b
+ 727 036c 0C       		.byte	0xc
+ 728 036d 05       		.uleb128 0x5
+ 729 036e 03       		.byte	0x3
+ 730 036f 00000000 		.4byte	SystemCoreClock
+ 731 0373 0A       		.uleb128 0xa
+ 732 0374 7F020000 		.4byte	0x27f
+ 733 0378 8E       		.byte	0x8e
+ 734 0379 0F       		.byte	0xf
+ 735 037a 05       		.uleb128 0x5
+ 736 037b 03       		.byte	0x3
+ 737 037c 00000000 		.4byte	AHBPrescTable
+ 738 0380 0A       		.uleb128 0xa
+ 739 0381 9F020000 		.4byte	0x29f
+ 740 0385 8F       		.byte	0x8f
+ 741 0386 0F       		.byte	0xf
+ 742 0387 05       		.uleb128 0x5
+ 743 0388 03       		.byte	0x3
+ 744 0389 00000000 		.4byte	APBPrescTable
+ 745 038d 13       		.uleb128 0x13
+ 746 038e B2010000 		.4byte	.LASF46
+ 747 0392 01       		.byte	0x1
+ 748 0393 0901     		.2byte	0x109
+ 749 0395 06       		.byte	0x6
+ 750 0396 68000000 		.4byte	.LFB64
+ 751 039a E4000000 		.4byte	.LFE64-.LFB64
+ 752 039e 01       		.uleb128 0x1
+ 753 039f 9C       		.byte	0x9c
+ 754 03a0 CF030000 		.4byte	0x3cf
+ 755 03a4 14       		.uleb128 0x14
+ 756 03a5 746D7000 		.ascii	"tmp\000"
+ 757 03a9 01       		.byte	0x1
+ 758 03aa 0B01     		.2byte	0x10b
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 21
+
+
+ 759 03ac 0C       		.byte	0xc
+ 760 03ad 9A000000 		.4byte	0x9a
+ 761 03b1 02       		.uleb128 0x2
+ 762 03b2 91       		.byte	0x91
+ 763 03b3 74       		.sleb128 -12
+ 764 03b4 0D       		.uleb128 0xd
+ 765 03b5 00000000 		.4byte	.LASF41
+ 766 03b9 16       		.byte	0x16
+ 767 03ba 9A000000 		.4byte	0x9a
+ 768 03be 02       		.uleb128 0x2
+ 769 03bf 91       		.byte	0x91
+ 770 03c0 70       		.sleb128 -16
+ 771 03c1 0D       		.uleb128 0xd
+ 772 03c2 24010000 		.4byte	.LASF42
+ 773 03c6 24       		.byte	0x24
+ 774 03c7 9A000000 		.4byte	0x9a
+ 775 03cb 02       		.uleb128 0x2
+ 776 03cc 91       		.byte	0x91
+ 777 03cd 6C       		.sleb128 -20
+ 778 03ce 00       		.byte	0
+ 779 03cf 15       		.uleb128 0x15
+ 780 03d0 2E000000 		.4byte	.LASF47
+ 781 03d4 01       		.byte	0x1
+ 782 03d5 AF       		.byte	0xaf
+ 783 03d6 06       		.byte	0x6
+ 784 03d7 00000000 		.4byte	.LFB63
+ 785 03db 68000000 		.4byte	.LFE63-.LFB63
+ 786 03df 01       		.uleb128 0x1
+ 787 03e0 9C       		.byte	0x9c
+ 788 03e1 00       		.byte	0
+ 789              		.section	.debug_abbrev,"",%progbits
+ 790              	.Ldebug_abbrev0:
+ 791 0000 01       		.uleb128 0x1
+ 792 0001 0D       		.uleb128 0xd
+ 793 0002 00       		.byte	0
+ 794 0003 03       		.uleb128 0x3
+ 795 0004 0E       		.uleb128 0xe
+ 796 0005 3A       		.uleb128 0x3a
+ 797 0006 0B       		.uleb128 0xb
+ 798 0007 3B       		.uleb128 0x3b
+ 799 0008 05       		.uleb128 0x5
+ 800 0009 39       		.uleb128 0x39
+ 801 000a 0B       		.uleb128 0xb
+ 802 000b 49       		.uleb128 0x49
+ 803 000c 13       		.uleb128 0x13
+ 804 000d 38       		.uleb128 0x38
+ 805 000e 0B       		.uleb128 0xb
+ 806 000f 00       		.byte	0
+ 807 0010 00       		.byte	0
+ 808 0011 02       		.uleb128 0x2
+ 809 0012 24       		.uleb128 0x24
+ 810 0013 00       		.byte	0
+ 811 0014 0B       		.uleb128 0xb
+ 812 0015 0B       		.uleb128 0xb
+ 813 0016 3E       		.uleb128 0x3e
+ 814 0017 0B       		.uleb128 0xb
+ 815 0018 03       		.uleb128 0x3
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 22
+
+
+ 816 0019 0E       		.uleb128 0xe
+ 817 001a 00       		.byte	0
+ 818 001b 00       		.byte	0
+ 819 001c 03       		.uleb128 0x3
+ 820 001d 0D       		.uleb128 0xd
+ 821 001e 00       		.byte	0
+ 822 001f 03       		.uleb128 0x3
+ 823 0020 08       		.uleb128 0x8
+ 824 0021 3A       		.uleb128 0x3a
+ 825 0022 0B       		.uleb128 0xb
+ 826 0023 3B       		.uleb128 0x3b
+ 827 0024 05       		.uleb128 0x5
+ 828 0025 39       		.uleb128 0x39
+ 829 0026 0B       		.uleb128 0xb
+ 830 0027 49       		.uleb128 0x49
+ 831 0028 13       		.uleb128 0x13
+ 832 0029 38       		.uleb128 0x38
+ 833 002a 0B       		.uleb128 0xb
+ 834 002b 00       		.byte	0
+ 835 002c 00       		.byte	0
+ 836 002d 04       		.uleb128 0x4
+ 837 002e 26       		.uleb128 0x26
+ 838 002f 00       		.byte	0
+ 839 0030 49       		.uleb128 0x49
+ 840 0031 13       		.uleb128 0x13
+ 841 0032 00       		.byte	0
+ 842 0033 00       		.byte	0
+ 843 0034 05       		.uleb128 0x5
+ 844 0035 01       		.uleb128 0x1
+ 845 0036 01       		.byte	0x1
+ 846 0037 49       		.uleb128 0x49
+ 847 0038 13       		.uleb128 0x13
+ 848 0039 01       		.uleb128 0x1
+ 849 003a 13       		.uleb128 0x13
+ 850 003b 00       		.byte	0
+ 851 003c 00       		.byte	0
+ 852 003d 06       		.uleb128 0x6
+ 853 003e 21       		.uleb128 0x21
+ 854 003f 00       		.byte	0
+ 855 0040 49       		.uleb128 0x49
+ 856 0041 13       		.uleb128 0x13
+ 857 0042 2F       		.uleb128 0x2f
+ 858 0043 0B       		.uleb128 0xb
+ 859 0044 00       		.byte	0
+ 860 0045 00       		.byte	0
+ 861 0046 07       		.uleb128 0x7
+ 862 0047 35       		.uleb128 0x35
+ 863 0048 00       		.byte	0
+ 864 0049 49       		.uleb128 0x49
+ 865 004a 13       		.uleb128 0x13
+ 866 004b 00       		.byte	0
+ 867 004c 00       		.byte	0
+ 868 004d 08       		.uleb128 0x8
+ 869 004e 16       		.uleb128 0x16
+ 870 004f 00       		.byte	0
+ 871 0050 03       		.uleb128 0x3
+ 872 0051 0E       		.uleb128 0xe
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 23
+
+
+ 873 0052 3A       		.uleb128 0x3a
+ 874 0053 0B       		.uleb128 0xb
+ 875 0054 3B       		.uleb128 0x3b
+ 876 0055 0B       		.uleb128 0xb
+ 877 0056 39       		.uleb128 0x39
+ 878 0057 0B       		.uleb128 0xb
+ 879 0058 49       		.uleb128 0x49
+ 880 0059 13       		.uleb128 0x13
+ 881 005a 00       		.byte	0
+ 882 005b 00       		.byte	0
+ 883 005c 09       		.uleb128 0x9
+ 884 005d 34       		.uleb128 0x34
+ 885 005e 00       		.byte	0
+ 886 005f 03       		.uleb128 0x3
+ 887 0060 0E       		.uleb128 0xe
+ 888 0061 3A       		.uleb128 0x3a
+ 889 0062 21       		.uleb128 0x21
+ 890 0063 05       		.sleb128 5
+ 891 0064 3B       		.uleb128 0x3b
+ 892 0065 0B       		.uleb128 0xb
+ 893 0066 39       		.uleb128 0x39
+ 894 0067 0B       		.uleb128 0xb
+ 895 0068 49       		.uleb128 0x49
+ 896 0069 13       		.uleb128 0x13
+ 897 006a 3F       		.uleb128 0x3f
+ 898 006b 19       		.uleb128 0x19
+ 899 006c 3C       		.uleb128 0x3c
+ 900 006d 19       		.uleb128 0x19
+ 901 006e 00       		.byte	0
+ 902 006f 00       		.byte	0
+ 903 0070 0A       		.uleb128 0xa
+ 904 0071 34       		.uleb128 0x34
+ 905 0072 00       		.byte	0
+ 906 0073 47       		.uleb128 0x47
+ 907 0074 13       		.uleb128 0x13
+ 908 0075 3A       		.uleb128 0x3a
+ 909 0076 21       		.uleb128 0x21
+ 910 0077 01       		.sleb128 1
+ 911 0078 3B       		.uleb128 0x3b
+ 912 0079 0B       		.uleb128 0xb
+ 913 007a 39       		.uleb128 0x39
+ 914 007b 0B       		.uleb128 0xb
+ 915 007c 02       		.uleb128 0x2
+ 916 007d 18       		.uleb128 0x18
+ 917 007e 00       		.byte	0
+ 918 007f 00       		.byte	0
+ 919 0080 0B       		.uleb128 0xb
+ 920 0081 13       		.uleb128 0x13
+ 921 0082 01       		.byte	0x1
+ 922 0083 0B       		.uleb128 0xb
+ 923 0084 0B       		.uleb128 0xb
+ 924 0085 3A       		.uleb128 0x3a
+ 925 0086 0B       		.uleb128 0xb
+ 926 0087 3B       		.uleb128 0x3b
+ 927 0088 05       		.uleb128 0x5
+ 928 0089 39       		.uleb128 0x39
+ 929 008a 21       		.uleb128 0x21
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 24
+
+
+ 930 008b 09       		.sleb128 9
+ 931 008c 01       		.uleb128 0x1
+ 932 008d 13       		.uleb128 0x13
+ 933 008e 00       		.byte	0
+ 934 008f 00       		.byte	0
+ 935 0090 0C       		.uleb128 0xc
+ 936 0091 16       		.uleb128 0x16
+ 937 0092 00       		.byte	0
+ 938 0093 03       		.uleb128 0x3
+ 939 0094 0E       		.uleb128 0xe
+ 940 0095 3A       		.uleb128 0x3a
+ 941 0096 0B       		.uleb128 0xb
+ 942 0097 3B       		.uleb128 0x3b
+ 943 0098 05       		.uleb128 0x5
+ 944 0099 39       		.uleb128 0x39
+ 945 009a 21       		.uleb128 0x21
+ 946 009b 03       		.sleb128 3
+ 947 009c 49       		.uleb128 0x49
+ 948 009d 13       		.uleb128 0x13
+ 949 009e 00       		.byte	0
+ 950 009f 00       		.byte	0
+ 951 00a0 0D       		.uleb128 0xd
+ 952 00a1 34       		.uleb128 0x34
+ 953 00a2 00       		.byte	0
+ 954 00a3 03       		.uleb128 0x3
+ 955 00a4 0E       		.uleb128 0xe
+ 956 00a5 3A       		.uleb128 0x3a
+ 957 00a6 21       		.uleb128 0x21
+ 958 00a7 01       		.sleb128 1
+ 959 00a8 3B       		.uleb128 0x3b
+ 960 00a9 21       		.uleb128 0x21
+ 961 00aa 8B02     		.sleb128 267
+ 962 00ac 39       		.uleb128 0x39
+ 963 00ad 0B       		.uleb128 0xb
+ 964 00ae 49       		.uleb128 0x49
+ 965 00af 13       		.uleb128 0x13
+ 966 00b0 02       		.uleb128 0x2
+ 967 00b1 18       		.uleb128 0x18
+ 968 00b2 00       		.byte	0
+ 969 00b3 00       		.byte	0
+ 970 00b4 0E       		.uleb128 0xe
+ 971 00b5 11       		.uleb128 0x11
+ 972 00b6 01       		.byte	0x1
+ 973 00b7 25       		.uleb128 0x25
+ 974 00b8 0E       		.uleb128 0xe
+ 975 00b9 13       		.uleb128 0x13
+ 976 00ba 0B       		.uleb128 0xb
+ 977 00bb 03       		.uleb128 0x3
+ 978 00bc 0E       		.uleb128 0xe
+ 979 00bd 1B       		.uleb128 0x1b
+ 980 00be 0E       		.uleb128 0xe
+ 981 00bf 11       		.uleb128 0x11
+ 982 00c0 01       		.uleb128 0x1
+ 983 00c1 12       		.uleb128 0x12
+ 984 00c2 06       		.uleb128 0x6
+ 985 00c3 10       		.uleb128 0x10
+ 986 00c4 17       		.uleb128 0x17
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 25
+
+
+ 987 00c5 00       		.byte	0
+ 988 00c6 00       		.byte	0
+ 989 00c7 0F       		.uleb128 0xf
+ 990 00c8 24       		.uleb128 0x24
+ 991 00c9 00       		.byte	0
+ 992 00ca 0B       		.uleb128 0xb
+ 993 00cb 0B       		.uleb128 0xb
+ 994 00cc 3E       		.uleb128 0x3e
+ 995 00cd 0B       		.uleb128 0xb
+ 996 00ce 03       		.uleb128 0x3
+ 997 00cf 08       		.uleb128 0x8
+ 998 00d0 00       		.byte	0
+ 999 00d1 00       		.byte	0
+ 1000 00d2 10       		.uleb128 0x10
+ 1001 00d3 04       		.uleb128 0x4
+ 1002 00d4 01       		.byte	0x1
+ 1003 00d5 3E       		.uleb128 0x3e
+ 1004 00d6 0B       		.uleb128 0xb
+ 1005 00d7 0B       		.uleb128 0xb
+ 1006 00d8 0B       		.uleb128 0xb
+ 1007 00d9 49       		.uleb128 0x49
+ 1008 00da 13       		.uleb128 0x13
+ 1009 00db 3A       		.uleb128 0x3a
+ 1010 00dc 0B       		.uleb128 0xb
+ 1011 00dd 3B       		.uleb128 0x3b
+ 1012 00de 0B       		.uleb128 0xb
+ 1013 00df 39       		.uleb128 0x39
+ 1014 00e0 0B       		.uleb128 0xb
+ 1015 00e1 01       		.uleb128 0x1
+ 1016 00e2 13       		.uleb128 0x13
+ 1017 00e3 00       		.byte	0
+ 1018 00e4 00       		.byte	0
+ 1019 00e5 11       		.uleb128 0x11
+ 1020 00e6 28       		.uleb128 0x28
+ 1021 00e7 00       		.byte	0
+ 1022 00e8 03       		.uleb128 0x3
+ 1023 00e9 0E       		.uleb128 0xe
+ 1024 00ea 1C       		.uleb128 0x1c
+ 1025 00eb 0B       		.uleb128 0xb
+ 1026 00ec 00       		.byte	0
+ 1027 00ed 00       		.byte	0
+ 1028 00ee 12       		.uleb128 0x12
+ 1029 00ef 28       		.uleb128 0x28
+ 1030 00f0 00       		.byte	0
+ 1031 00f1 03       		.uleb128 0x3
+ 1032 00f2 08       		.uleb128 0x8
+ 1033 00f3 1C       		.uleb128 0x1c
+ 1034 00f4 0B       		.uleb128 0xb
+ 1035 00f5 00       		.byte	0
+ 1036 00f6 00       		.byte	0
+ 1037 00f7 13       		.uleb128 0x13
+ 1038 00f8 2E       		.uleb128 0x2e
+ 1039 00f9 01       		.byte	0x1
+ 1040 00fa 3F       		.uleb128 0x3f
+ 1041 00fb 19       		.uleb128 0x19
+ 1042 00fc 03       		.uleb128 0x3
+ 1043 00fd 0E       		.uleb128 0xe
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 26
+
+
+ 1044 00fe 3A       		.uleb128 0x3a
+ 1045 00ff 0B       		.uleb128 0xb
+ 1046 0100 3B       		.uleb128 0x3b
+ 1047 0101 05       		.uleb128 0x5
+ 1048 0102 39       		.uleb128 0x39
+ 1049 0103 0B       		.uleb128 0xb
+ 1050 0104 27       		.uleb128 0x27
+ 1051 0105 19       		.uleb128 0x19
+ 1052 0106 11       		.uleb128 0x11
+ 1053 0107 01       		.uleb128 0x1
+ 1054 0108 12       		.uleb128 0x12
+ 1055 0109 06       		.uleb128 0x6
+ 1056 010a 40       		.uleb128 0x40
+ 1057 010b 18       		.uleb128 0x18
+ 1058 010c 7A       		.uleb128 0x7a
+ 1059 010d 19       		.uleb128 0x19
+ 1060 010e 01       		.uleb128 0x1
+ 1061 010f 13       		.uleb128 0x13
+ 1062 0110 00       		.byte	0
+ 1063 0111 00       		.byte	0
+ 1064 0112 14       		.uleb128 0x14
+ 1065 0113 34       		.uleb128 0x34
+ 1066 0114 00       		.byte	0
+ 1067 0115 03       		.uleb128 0x3
+ 1068 0116 08       		.uleb128 0x8
+ 1069 0117 3A       		.uleb128 0x3a
+ 1070 0118 0B       		.uleb128 0xb
+ 1071 0119 3B       		.uleb128 0x3b
+ 1072 011a 05       		.uleb128 0x5
+ 1073 011b 39       		.uleb128 0x39
+ 1074 011c 0B       		.uleb128 0xb
+ 1075 011d 49       		.uleb128 0x49
+ 1076 011e 13       		.uleb128 0x13
+ 1077 011f 02       		.uleb128 0x2
+ 1078 0120 18       		.uleb128 0x18
+ 1079 0121 00       		.byte	0
+ 1080 0122 00       		.byte	0
+ 1081 0123 15       		.uleb128 0x15
+ 1082 0124 2E       		.uleb128 0x2e
+ 1083 0125 00       		.byte	0
+ 1084 0126 3F       		.uleb128 0x3f
+ 1085 0127 19       		.uleb128 0x19
+ 1086 0128 03       		.uleb128 0x3
+ 1087 0129 0E       		.uleb128 0xe
+ 1088 012a 3A       		.uleb128 0x3a
+ 1089 012b 0B       		.uleb128 0xb
+ 1090 012c 3B       		.uleb128 0x3b
+ 1091 012d 0B       		.uleb128 0xb
+ 1092 012e 39       		.uleb128 0x39
+ 1093 012f 0B       		.uleb128 0xb
+ 1094 0130 27       		.uleb128 0x27
+ 1095 0131 19       		.uleb128 0x19
+ 1096 0132 11       		.uleb128 0x11
+ 1097 0133 01       		.uleb128 0x1
+ 1098 0134 12       		.uleb128 0x12
+ 1099 0135 06       		.uleb128 0x6
+ 1100 0136 40       		.uleb128 0x40
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 27
+
+
+ 1101 0137 18       		.uleb128 0x18
+ 1102 0138 7A       		.uleb128 0x7a
+ 1103 0139 19       		.uleb128 0x19
+ 1104 013a 00       		.byte	0
+ 1105 013b 00       		.byte	0
+ 1106 013c 00       		.byte	0
+ 1107              		.section	.debug_aranges,"",%progbits
+ 1108 0000 1C000000 		.4byte	0x1c
+ 1109 0004 0200     		.2byte	0x2
+ 1110 0006 00000000 		.4byte	.Ldebug_info0
+ 1111 000a 04       		.byte	0x4
+ 1112 000b 00       		.byte	0
+ 1113 000c 0000     		.2byte	0
+ 1114 000e 0000     		.2byte	0
+ 1115 0010 00000000 		.4byte	.Ltext0
+ 1116 0014 4C010000 		.4byte	.Letext0-.Ltext0
+ 1117 0018 00000000 		.4byte	0
+ 1118 001c 00000000 		.4byte	0
+ 1119              		.section	.debug_line,"",%progbits
+ 1120              	.Ldebug_line0:
+ 1121 0000 45020000 		.section	.debug_str,"MS",%progbits,1
+ 1121      03007E01 
+ 1121      00000201 
+ 1121      FB0E0D00 
+ 1121      01010101 
+ 1122              	.LASF41:
+ 1123 0000 706C6C6D 		.ascii	"pllmull\000"
+ 1123      756C6C00 
+ 1124              	.LASF38:
+ 1125 0008 42444352 		.ascii	"BDCR\000"
+ 1125      00
+ 1126              	.LASF32:
+ 1127 000d 43464752 		.ascii	"CFGR\000"
+ 1127      00
+ 1128              	.LASF35:
+ 1129 0012 41484245 		.ascii	"AHBENR\000"
+ 1129      4E5200
+ 1130              	.LASF24:
+ 1131 0019 4D4D4652 		.ascii	"MMFR\000"
+ 1131      00
+ 1132              	.LASF17:
+ 1133 001e 53484353 		.ascii	"SHCSR\000"
+ 1133      5200
+ 1134              	.LASF5:
+ 1135 0024 5F5F7569 		.ascii	"__uint8_t\000"
+ 1135      6E74385F 
+ 1135      7400
+ 1136              	.LASF47:
+ 1137 002e 53797374 		.ascii	"SystemInit\000"
+ 1137      656D496E 
+ 1137      697400
+ 1138              	.LASF3:
+ 1139 0039 73686F72 		.ascii	"short unsigned int\000"
+ 1139      7420756E 
+ 1139      7369676E 
+ 1139      65642069 
+ 1139      6E7400
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 28
+
+
+ 1140              	.LASF11:
+ 1141 004c 75696E74 		.ascii	"uint8_t\000"
+ 1141      385F7400 
+ 1142              	.LASF26:
+ 1143 0054 52455345 		.ascii	"RESERVED0\000"
+ 1143      52564544 
+ 1143      3000
+ 1144              	.LASF36:
+ 1145 005e 41504232 		.ascii	"APB2ENR\000"
+ 1145      454E5200 
+ 1146              	.LASF45:
+ 1147 0066 2F557365 		.ascii	"/Users/cw/Projekte_local/maker/stm32/STM32F103_ENCO"
+ 1147      72732F63 
+ 1147      772F5072 
+ 1147      6F6A656B 
+ 1147      74655F6C 
+ 1148 0099 44455200 		.ascii	"DER\000"
+ 1149              	.LASF1:
+ 1150 009d 756E7369 		.ascii	"unsigned char\000"
+ 1150      676E6564 
+ 1150      20636861 
+ 1150      7200
+ 1151              	.LASF30:
+ 1152 00ab 41484250 		.ascii	"AHBPrescTable\000"
+ 1152      72657363 
+ 1152      5461626C 
+ 1152      6500
+ 1153              	.LASF7:
+ 1154 00b9 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1154      20756E73 
+ 1154      69676E65 
+ 1154      6420696E 
+ 1154      7400
+ 1155              	.LASF18:
+ 1156 00cb 43465352 		.ascii	"CFSR\000"
+ 1156      00
+ 1157              	.LASF6:
+ 1158 00d0 5F5F7569 		.ascii	"__uint32_t\000"
+ 1158      6E743332 
+ 1158      5F7400
+ 1159              	.LASF15:
+ 1160 00db 56544F52 		.ascii	"VTOR\000"
+ 1160      00
+ 1161              	.LASF19:
+ 1162 00e0 48465352 		.ascii	"HFSR\000"
+ 1162      00
+ 1163              	.LASF14:
+ 1164 00e5 49435352 		.ascii	"ICSR\000"
+ 1164      00
+ 1165              	.LASF34:
+ 1166 00ea 41504231 		.ascii	"APB1RSTR\000"
+ 1166      52535452 
+ 1166      00
+ 1167              	.LASF2:
+ 1168 00f3 73686F72 		.ascii	"short int\000"
+ 1168      7420696E 
+ 1168      7400
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 29
+
+
+ 1169              	.LASF37:
+ 1170 00fd 41504231 		.ascii	"APB1ENR\000"
+ 1170      454E5200 
+ 1171              	.LASF33:
+ 1172 0105 41504232 		.ascii	"APB2RSTR\000"
+ 1172      52535452 
+ 1172      00
+ 1173              	.LASF28:
+ 1174 010e 5343425F 		.ascii	"SCB_Type\000"
+ 1174      54797065 
+ 1174      00
+ 1175              	.LASF10:
+ 1176 0117 756E7369 		.ascii	"unsigned int\000"
+ 1176      676E6564 
+ 1176      20696E74 
+ 1176      00
+ 1177              	.LASF42:
+ 1178 0124 706C6C73 		.ascii	"pllsource\000"
+ 1178      6F757263 
+ 1178      6500
+ 1179              	.LASF20:
+ 1180 012e 44465352 		.ascii	"DFSR\000"
+ 1180      00
+ 1181              	.LASF9:
+ 1182 0133 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1182      206C6F6E 
+ 1182      6720756E 
+ 1182      7369676E 
+ 1182      65642069 
+ 1183              	.LASF44:
+ 1184 014a 434D5349 		.ascii	"CMSIS/Device/STM32F1xx/src/system_stm32f1xx.c\000"
+ 1184      532F4465 
+ 1184      76696365 
+ 1184      2F53544D 
+ 1184      33324631 
+ 1185              	.LASF16:
+ 1186 0178 41495243 		.ascii	"AIRCR\000"
+ 1186      5200
+ 1187              	.LASF25:
+ 1188 017e 49534152 		.ascii	"ISAR\000"
+ 1188      00
+ 1189              	.LASF22:
+ 1190 0183 42464152 		.ascii	"BFAR\000"
+ 1190      00
+ 1191              	.LASF8:
+ 1192 0188 6C6F6E67 		.ascii	"long long int\000"
+ 1192      206C6F6E 
+ 1192      6720696E 
+ 1192      7400
+ 1193              	.LASF13:
+ 1194 0196 43505549 		.ascii	"CPUID\000"
+ 1194      4400
+ 1195              	.LASF27:
+ 1196 019c 43504143 		.ascii	"CPACR\000"
+ 1196      5200
+ 1197              	.LASF29:
+ 1198 01a2 53797374 		.ascii	"SystemCoreClock\000"
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 30
+
+
+ 1198      656D436F 
+ 1198      7265436C 
+ 1198      6F636B00 
+ 1199              	.LASF46:
+ 1200 01b2 53797374 		.ascii	"SystemCoreClockUpdate\000"
+ 1200      656D436F 
+ 1200      7265436C 
+ 1200      6F636B55 
+ 1200      70646174 
+ 1201              	.LASF31:
+ 1202 01c8 41504250 		.ascii	"APBPrescTable\000"
+ 1202      72657363 
+ 1202      5461626C 
+ 1202      6500
+ 1203              	.LASF21:
+ 1204 01d6 4D4D4641 		.ascii	"MMFAR\000"
+ 1204      5200
+ 1205              	.LASF39:
+ 1206 01dc 5243435F 		.ascii	"RCC_TypeDef\000"
+ 1206      54797065 
+ 1206      44656600 
+ 1207              	.LASF12:
+ 1208 01e8 75696E74 		.ascii	"uint32_t\000"
+ 1208      33325F74 
+ 1208      00
+ 1209              	.LASF4:
+ 1210 01f1 6C6F6E67 		.ascii	"long int\000"
+ 1210      20696E74 
+ 1210      00
+ 1211              	.LASF0:
+ 1212 01fa 7369676E 		.ascii	"signed char\000"
+ 1212      65642063 
+ 1212      68617200 
+ 1213              	.LASF23:
+ 1214 0206 41465352 		.ascii	"AFSR\000"
+ 1214      00
+ 1215              	.LASF40:
+ 1216 020b 52455345 		.ascii	"RESET\000"
+ 1216      5400
+ 1217              	.LASF43:
+ 1218 0211 474E5520 		.ascii	"GNU C99 13.2.1 20231009 -mthumb -mcpu=cortex-m3 -mf"
+ 1218      43393920 
+ 1218      31332E32 
+ 1218      2E312032 
+ 1218      30323331 
+ 1219 0244 6C6F6174 		.ascii	"loat-abi=soft -march=armv7-m -g -std=gnu99 -fno-com"
+ 1219      2D616269 
+ 1219      3D736F66 
+ 1219      74202D6D 
+ 1219      61726368 
+ 1220 0277 6D6F6E00 		.ascii	"mon\000"
+ 1221              		.ident	"GCC: (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009"
+ARM GAS  /var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 system_stm32f1xx.c
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:23     .data:00000000 SystemCoreClock
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:20     .data:00000000 $d
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:30     .rodata:00000000 AHBPrescTable
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:27     .rodata:00000000 $d
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:37     .rodata:00000010 APBPrescTable
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:40     .text:00000000 $t
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:46     .text:00000000 SystemInit
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:117    .text:0000005c $d
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:123    .text:00000068 $t
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:129    .text:00000068 SystemCoreClockUpdate
+/var/folders/7g/gx2z5z456bq_r9kbxlcydkzm0000gn/T//ccLFitMr.s:286    .text:00000138 $d
+
+NO UNDEFINED SYMBOLS
