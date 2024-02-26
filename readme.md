@@ -1,4 +1,4 @@
-# STM32F103C8T6 Encoder (aka Bluepill) CMSIS no HAL
+# STM32F103C8T6 (aka Bluepill) Encoder Mode CMSIS no HAL
 
 
 ## Description
