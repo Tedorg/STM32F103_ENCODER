@@ -1,4 +1,4 @@
-/*Module encoder should return the speed of the robot in units per minute
+/*Module encoder should return the speed of the robot in rotation per minute
 The encoder module should be able to calculate the speed of the robot based on the number of encoder steps and the time passed
 this module should be initialized with the init_encoder function and updated with the update_speed function
 
@@ -88,7 +88,7 @@ void update_speed(encoder_t *left, encoder_t *right) {
 
 void print_debug_info(encoder_t *left, encoder_t *right) {
     // Print debug information
-    printf("Left: %ld, speed: %0.3f Pos: %ld \t Right: %ld, speed: %0.3f Pos: %ld cpu: %ld \n", left->current_count, left->speed, left->position, right->current_count, right->speed, right->position, measure_cpu_usage());
+    printf("Left: %ld, speed: %0.3f Pos: %ld \t Right: %ld, speed: %0.3f Pos: %ld  \n", left->current_count, left->speed, left->position, right->current_count, right->speed, right->position);
 }
 // ...
 
@@ -126,7 +126,7 @@ void print_debug_info(encoder_t *left, encoder_t *right) {
    // TIM3->CR1 = 0;                                     // Disable timer
     TIM3->CCMR1 = TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0; // Capture on TI1 and TI2
     TIM3->SMCR = TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0;      // Enable encoder mode
-    TIM3->CNT = 32768;                                 // Reset counter
+    TIM3->CNT = reset_encoder_count;                                 // Reset counter
     TIM3->CR1 |= TIM_CR1_CEN;                          // Enable timer
   }
 
@@ -144,7 +144,7 @@ void print_debug_info(encoder_t *left, encoder_t *right) {
    // TIM2->CR1 = 0;                                     // Disable timer
     TIM2->CCMR1 = TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0; // Capture on TI1 and TI2
     TIM2->SMCR = TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0;      // Enable encoder mode
-    TIM2->CNT = 32768;                                 // Reset counter
+    TIM2->CNT = reset_encoder_count;                                 // Reset counter
     TIM2->CR1 |= TIM_CR1_CEN;                          // Enable timer
   }
 
