@@ -20,6 +20,10 @@ This module provides an interface for reading rotary encoders using the STM32F10
 ## Usage
  -  Initialize the encoder module by calling the initialization function.
  -  get speed and postition of encoders
+ 
+ ## FLASHING
+ - run make clean
+ - run make swd_flash
 
 
 
