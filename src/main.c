@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include "stm32f1xx.h"
 #include "stm32f103_setup.h"
+#include "uart.h"
 #include "encoder.h"
 /*measure time passed since the last update*/
 uint32_t initialTime = 0;
@@ -28,6 +29,7 @@ void init_setup(void)
    //Enable DWT 
     enableDWT();
     //init_rtc();
+    init_uart();
    
     init_encoder(&left, &right);
 }
@@ -40,6 +42,9 @@ int main(void)
     uint32_t clock_speed = SystemCoreClock / 1000000;
     printf("MEMORY %d kb  CLOCKSPEED %ld MHz   TIME %ld \n", *((uint16_t *)0x1FFFF7E0), clock_speed, micros());
 
+
+    reset_position(&left);
+    reset_position(&right);            
    
     while (1)
     {   
@@ -55,10 +60,12 @@ int main(void)
             uint32_t position_left = get_position(&left);
             uint32_t position_right = get_position(&right);
 
-            reset_position(&left);
-            reset_position(&right);            
+            printf("LEFT -Speed: %07.3f -Pos: %06ld \t RIGHT -Speed: %07.3f -Pos: %06ld  \n", speed_left, position_left, speed_right, position_right);
+
+
+           
             // Print debug information
-            print_debug_info(&left, &right);
+            //print_debug_info(&left, &right);
            
         initialTime =  currentMillis;
 

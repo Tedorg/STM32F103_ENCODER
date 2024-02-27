@@ -14,15 +14,14 @@ void print_debug_info(encoder_t *left, encoder_t *right);
 
 float get_speed(encoder_t *enc);
 
-uint32_t get_position(encoder_t *enc);
+int32_t get_position(encoder_t *enc);
 
 void reset_position(encoder_t *enc);
 
 struct encoder {
-    int32_t current_count;
-    int32_t previous_count;
-    float speed; // units per minute
+    uint16_t current_count;
     int32_t position;
+    float speed; // units per minute
 };
 
 

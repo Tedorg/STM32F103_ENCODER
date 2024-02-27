@@ -88,7 +88,7 @@ float get_speed(encoder_t *enc){
     return enc->speed;
 }
 
-uint32_t get_position(encoder_t *enc){
+int32_t get_position(encoder_t *enc){
     return enc->position;
 }
 
