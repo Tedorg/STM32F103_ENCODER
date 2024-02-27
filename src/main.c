@@ -48,6 +48,15 @@ int main(void)
         if ( currentMillis - initialTime >= 100)
         {
             update_speed(&left, &right);
+
+            float speed_left = get_speed(&left);
+            float speed_right = get_speed(&right);
+
+            uint32_t position_left = get_position(&left);
+            uint32_t position_right = get_position(&right);
+
+            reset_position(&left);
+            reset_position(&right);            
             // Print debug information
             print_debug_info(&left, &right);
            

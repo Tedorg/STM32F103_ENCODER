@@ -12,9 +12,11 @@ void update_speed(encoder_t *left, encoder_t *right);
 // float get_speed(struct encoder* enc);
 void print_debug_info(encoder_t *left, encoder_t *right);
 
+float get_speed(encoder_t *enc);
 
-// void init_hardware_decoder_1(void); 
-// void init_hardware_decoder_2(void);
+uint32_t get_position(encoder_t *enc);
+
+void reset_position(encoder_t *enc);
 
 struct encoder {
     int32_t current_count;

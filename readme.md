@@ -2,25 +2,25 @@
 
 
 ## Description
-This module provides an interface for reading rotary encoders using the STM32F103C8T6 microcontroller (aka BLuepill). It allows you to easily integrate rotary encoders into your STM32F103C8T6-based projects.
+This module provides an interface for reading rotary encoders using the STM32F103C8T6 microcontroller (aka Bluepill). It allows you to easily integrate rotary encoders into your STM32F103C8T6-based projects.
 
 ## Features
-- Support for both incremental and absolute rotary encoders on PA0 PA1 and PA6 PA7
-- Hardware timers 
-- Serial Interface for debugging
+- Support for two quadrature rotary encoders on PA0 PA1 and PA6 PA7.
+- Serial interface for debugging.
 
 ## Installation
 1. Clone or download the repository.
 2. Copy the necessary files into your STM32F103C8T6 project.
 3. The following tools are used for these projects:
 	- ARM-GCC compiler toolchain.
-	- stm32flash flash tool using the on-board STM32 serial bootloader over UART.
 	- st-link flash tool using an ST-LINK V2 USB programmer.
 	- Official STM32 CMSIS files as part of their STM32Cube MCU packages.
-4. set the path in the makefile
+4. set the path in the makefile 
 
 ## Usage
-1. Initialize the encoder module by calling the initialization function.
+ -  Initialize the encoder module by calling the initialization function.
+ -  get speed and postition of encoders
+
 
 
 ## Examples

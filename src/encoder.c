@@ -84,6 +84,17 @@ void update_speed(encoder_t *left, encoder_t *right) {
     previous_millis = current_millis;
 }
 
+float get_speed(encoder_t *enc){
+    return enc->speed;
+}
+
+uint32_t get_position(encoder_t *enc){
+    return enc->position;
+}
+
+void reset_position(encoder_t *enc){
+    enc->position = 0;
+}
 
 
 void print_debug_info(encoder_t *left, encoder_t *right) {
