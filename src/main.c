@@ -11,7 +11,6 @@
  Known bugs/missing features:
 
 \****************************************************************************/
-#include "main.h"
 #include <stdint.h>
 #include <stdio.h>
 #include "stm32f1xx.h"
