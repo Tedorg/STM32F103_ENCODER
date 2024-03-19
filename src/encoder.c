@@ -19,144 +19,127 @@ while(1) {
 #include "stm32f1xx.h"
 #include "stm32f103_setup.h"
 
-
 #define ENCODER_COUNT 1300 // number of encoder steps per wheel revolution
-#define USED_ENCODERS 2 // how many encoders are used
+#define MAX_ENCODERS 2     // maximum amount of encoders
 
 /*reset encoder count is halt of max uint16. this helps to prevent faulty vlaue on overflow*/
-const int reset_encoder_count =65535/2;
+const int reset_encoder_count = 65535 / 2;
 
-int32_t current_millis = 0, previous_millis = 0;
+int interval, count_difference;
 
-static float calculate_speed( int count, int interval);
-static void init_hardware_decoder_1(void);
-static void init_hardware_decoder_2(void);
-void init_encoder( encoder_t *left, encoder_t *right) {
-    
-    init_hardware_decoder_1();
-    init_hardware_decoder_2();
-    
-    left->current_count = 0;
-    left->speed = 0.0;
-    left->position = 0;
+static float calculate_speed(int count, int interval);
+static void init_decoder_TIM2(void);
+static void init_decoder_TIM3(void);
 
-    right->current_count = 0;
-    right->speed = 0.0;
-    right->position = 0;
+uint8_t init_encoder(encoder_t *enc, uint8_t number_of_encoder)
+{
+
+    if (number_of_encoder + 1 > MAX_ENCODERS)
+        return 1;
+
+    if (number_of_encoder == 0)
+    {
+        init_decoder_TIM2();
+        enc->timer = (volatile uint32_t *)(TIM2_BASE + 0x24);
+    }
+    else
+    {
+        init_decoder_TIM3();
+        enc->timer = (volatile uint32_t *)(TIM3_BASE + 0x24);
+    }
+    enc->speed = 0;
+    enc->position = 0;
+    enc->current_count = 0;
+    enc->previous_millis = 0;
+    return 0;
 }
 
-static float calculate_speed( int count, int interval) {
+static float calculate_speed(int count, int interval)
+{
     // Calculate speed in units per minute
-    //
-    float speed = (count/(float)ENCODER_COUNT)*(60000.0/interval);
+    float speed = (count / (float)ENCODER_COUNT) * (60000.0 / interval);
     return speed;
 }
 
-// ...
-
-void update_speed(encoder_t *left, encoder_t *right) {
+void update_encoder(encoder_t *enc)
+{
     /*
-    Update general values for both encoders
+    Update general values for  encoder
     interval is the time passed since the last update. its measured in milliseconds
-
-    */ 
-
-    int interval, count_difference;
+    */
+    uint32_t current_millis;
     current_millis = millis();
-    interval = current_millis - previous_millis;
-    
-    // Update speed for left encoder
-    left->current_count = TIM2->CNT;
-    count_difference = left->current_count - reset_encoder_count;
-    /*poston sums driven distance */
-    left->position += (count_difference);
-    left->speed = calculate_speed(count_difference,  interval);
-    /*reset encoder count to prevent overflow*/
-    TIM2->CNT = reset_encoder_count;
-    
-    // Update speed for right encoder
-    right->current_count = TIM3->CNT;
-    count_difference = right->current_count - reset_encoder_count;
-    right->position += (count_difference);
-    right->speed = calculate_speed(count_difference,  interval);
-    TIM3->CNT = reset_encoder_count;
-
-    previous_millis = current_millis;
+    if (current_millis > enc->previous_millis)
+    {
+        interval = current_millis - enc->previous_millis;
+        enc->current_count = *(enc->timer);
+        count_difference = enc->current_count - reset_encoder_count;
+        /*poston sums driven distance */
+        enc->position += (count_difference);
+        enc->speed = calculate_speed(count_difference, interval);
+        /*reset encoder count to prevent overflow*/
+        *(enc->timer) = reset_encoder_count;
+    }
+    enc->previous_millis = current_millis;
 }
 
-float get_speed(encoder_t *enc){
+float get_speed_enc(encoder_t *enc)
+{
     return enc->speed;
 }
 
-int32_t get_position(encoder_t *enc){
+int32_t get_position_enc(encoder_t *enc)
+{
     return enc->position;
 }
 
-void reset_position(encoder_t *enc){
+void reset_position_enc(encoder_t *enc)
+{
     enc->position = 0;
 }
 
-
-void print_debug_info(encoder_t *left, encoder_t *right) {
+void print_info_enc(encoder_t *enc)
+{
     // Print debug information
-    printf("Left: %ld, speed: %0.3f Pos: %ld \t Right: %ld, speed: %0.3f Pos: %ld  \n", left->current_count, left->speed, left->position, right->current_count, right->speed, right->position);
+    printf("Left: %ld, speed: %0.3f Pos: %ld  \t", enc->current_count, enc->speed, enc->position);
 }
 // ...
-
-// void setup_timer() {
-//     // Configure TIM1 channel 4 for 100ms interval
-//     TIM1->CCR4 = 100; // Set compare value for 100ms
-//     TIM1->CCMR2 |= TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2; // Set channel 4 to PWM mode 1
-//     TIM1->CCER |= TIM_CCER_CC4E; // Enable channel 4 output
-//     TIM1->CR1 |= TIM_CR1_CEN; // Enable TIM1
-
-//     // Enable TIM1 channel 4 interrupt
-//     NVIC_EnableIRQ(TIM1_CC_IRQn);
-//     TIM1->DIER |= TIM_DIER_CC4IE; // Enable capture/compare 4 interrupt
-// }
-
-    
-
 
 // float get_speed(struct encoder* enc) {
 //     return enc->speed;
 // }
 
-
- static void init_hardware_decoder_1(void)
-  {
+static void init_decoder_TIM3(void)
+{
 
     RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
-
     // Configure Pins 0 and 1 of Port A as alternate function inputs
     GPIOA->CRL &= ~(GPIO_CRL_CNF6 | GPIO_CRL_CNF7);
     GPIOA->CRL |= (GPIO_CRL_CNF6_1 | GPIO_CRL_CNF7_1);
     TIM3->ARR = 0xFFFF;
     // Configure encoder interface
-    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;                // Enable clock for TIM2
-   // TIM3->CR1 = 0;                                     // Disable timer
+    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;                // Enable clock for TIM2                                               // TIM3->CR1 = 0;                                     // Disable timer
     TIM3->CCMR1 = TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0; // Capture on TI1 and TI2
     TIM3->SMCR = TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0;      // Enable encoder mode
-    TIM3->CNT = reset_encoder_count;                                 // Reset counter
+    TIM3->CNT = reset_encoder_count;                   // Reset counter
     TIM3->CR1 |= TIM_CR1_CEN;                          // Enable timer
-  }
+    printf("init encoder tim3 %d \n", TIM3->CNT);
+}
 
- static void init_hardware_decoder_2(void)
-  {
+static void init_decoder_TIM2(void)
+{
+
     // Enable clock for GPIO Port A
     RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
-
     // Configure Pins 0 and 1 of Port A as alternate function inputs
     GPIOA->CRL &= ~(GPIO_CRL_CNF0 | GPIO_CRL_CNF1);
     GPIOA->CRL |= (GPIO_CRL_CNF0_1 | GPIO_CRL_CNF1_1);
-    TIM2->ARR =0xFFFF;
+    TIM2->ARR = 0xFFFF;
     // Configure encoder interface
-    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;                // Enable clock for TIM2
-   // TIM2->CR1 = 0;                                     // Disable timer
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;                // Enable clock for TIM2                                               // TIM2->CR1 = 0;                                     // Disable timer
     TIM2->CCMR1 = TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0; // Capture on TI1 and TI2
     TIM2->SMCR = TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0;      // Enable encoder mode
-    TIM2->CNT = reset_encoder_count;                                 // Reset counter
+    TIM2->CNT = reset_encoder_count;                   // Reset counter
     TIM2->CR1 |= TIM_CR1_CEN;                          // Enable timer
-  }
-
-
+    printf("init encoder tim2 %d \n", TIM2->CNT);
+}

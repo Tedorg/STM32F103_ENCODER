@@ -15,12 +15,12 @@ This module provides an interface for reading rotary encoders using the STM32F10
 	- ARM-GCC compiler toolchain.
 	- st-link flash tool using an ST-LINK V2 USB programmer.
 	- Official STM32 CMSIS files as part of their STM32Cube MCU packages.
-4. set the path in the makefile 
+4. set the path in the makefile
 
 ## Usage
  -  Initialize the encoder module by calling the initialization function.
  -  get speed and postition of encoders
- 
+
  ## FLASHING
  - run make clean
  - run make swd_flash
@@ -29,11 +29,31 @@ This module provides an interface for reading rotary encoders using the STM32F10
 
 ## Examples
 ```in main.c
-encoder_t left, right;
-init_encoder(&left, &right);
+
+#define NUMBER_OF_ENCODER 2
+#define ENCODER_LEFT 0
+#define ENCODER_RIGHT 1
+
+encoder_t encoder_data[NUMBER_OF_ENCODER];
+    for (int i = 0; i < NUMBER_OF_ENCODER; i++)
+    {
+        init_encoder(&encoder_data[i], (uint8_t)i);
+    }
 while(1) {
-    update_speed(&left, &right);
-    print_debug_info(&left, &right);
+	update_encoder(&encoder_data[ENCODER_LEFT]);
+	update_encoder(&encoder_data[ENCODER_RIGHT]);
+
+    float speed_left = get_speed_enc(&encoder_data[ENCODER_LEFT]);
+    float speed_right = get_speed_enc(&encoder_data[ENCODER_RIGHT]);
+
+    uint32_t position_left = get_position_enc(&encoder_data[ENCODER_LEFT]);
+    uint32_t position_right = get_position_enc(&encoder_data[ENCODER_RIGHT]);
+
+    // Print debug information
+    printf("\nLEFT: ");
+    print_info_enc(&encoder_data[ENCODER_LEFT]);
+    printf("RIGHT: ");
+    print_info_enc(&encoder_data[ENCODER_RIGHT]);
 }
 ```
 
